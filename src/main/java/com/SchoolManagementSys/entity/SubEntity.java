@@ -9,13 +9,15 @@ import lombok.Setter;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
+@Getter
 @Entity
 @Table(name = "Subject")
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class SubEntity
+@Setter
+public class SubEntity extends AuditorEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,54 +28,6 @@ public class SubEntity
 
     @ManyToOne
     @JoinColumn(name = "professor")
-//    @JsonIgnore
     private ProfEntity professor;
 
-    @ManyToMany(mappedBy = "subjects")
-    @JsonIgnore
-    private List<StdEntity>students;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public ProfEntity getProfessor() {
-        return professor;
-    }
-
-    public void setProfessor(ProfEntity professor) {
-        this.professor = professor;
-    }
-
-    public List<StdEntity> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<StdEntity> students) {
-        this.students = students;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SubEntity subEntity)) return false;
-        return Objects.equals(getId(), subEntity.getId()) && Objects.equals(getTitle(), subEntity.getTitle());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getTitle());
-    }
 }

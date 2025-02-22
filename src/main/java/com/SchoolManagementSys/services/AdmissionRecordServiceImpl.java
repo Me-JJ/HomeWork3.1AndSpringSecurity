@@ -1,7 +1,9 @@
 package com.SchoolManagementSys.services;
 
+import com.SchoolManagementSys.dto.AdmissionRecordDto;
 import com.SchoolManagementSys.entity.AdmissionRecordEntity;
 import com.SchoolManagementSys.repositories.AdmissionRecordRepo;
+import com.SchoolManagementSys.utils.RandomNum;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -11,32 +13,26 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdmissionRecordServiceImpl implements AdmissionRecordService
 {
 
-    private Integer getNumber() {
-        return new Random().nextInt(100);
-    }
-
     private final AdmissionRecordRepo admissionRecordRepo;
+    private final ModelMapper modelMapper;
 
-    public AdmissionRecordServiceImpl(AdmissionRecordRepo admissionRecordRepo, ModelMapper modelMapper) {
-        this.admissionRecordRepo = admissionRecordRepo;
+    @Override
+    public List<AdmissionRecordDto> getAllAdmissionRecords()
+    {
+        return admissionRecordRepo.findAll().stream()
+                .map(record -> modelMapper.map(record, AdmissionRecordDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<AdmissionRecordEntity> getAllAdmissionRecords()
+    public AdmissionRecordDto createRecord(AdmissionRecordEntity admissionRecordEntity)
     {
-        return admissionRecordRepo.findAll();
+        admissionRecordEntity.setFees(RandomNum.getNumber()*admissionRecordEntity.getFees());
+        return modelMapper.map(admissionRecordRepo.save(admissionRecordEntity), AdmissionRecordDto.class);
     }
-
-    @Override
-    public AdmissionRecordEntity createRecord(AdmissionRecordEntity admissionRecordEntity)
-    {
-        admissionRecordEntity.setFees(getNumber()*admissionRecordEntity.getFees());
-        return admissionRecordRepo.save(admissionRecordEntity);
-    }
-
-
 
 }

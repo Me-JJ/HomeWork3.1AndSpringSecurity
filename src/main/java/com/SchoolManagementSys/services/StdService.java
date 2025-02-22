@@ -1,16 +1,16 @@
 package com.SchoolManagementSys.services;
 
-import com.SchoolManagementSys.entity.StdEntity;
+import com.SchoolManagementSys.dto.StdDto;
 
 import java.util.List;
 
 public interface StdService {
 
-    StdEntity createStd(StdEntity stdEntity);
+    StdDto createStd(StdDto stdDto);
 
-    List<StdEntity> getAll();
+    List<StdDto> getAll();
 
-    StdEntity updateStdAdmissionRecord(Long stdId, Long arcId);
+    StdDto updateStdAdmissionRecord(Long stdId, Long arcId);
 
-    StdEntity updateStdProf(Long stdId,Long prodId);
+    StdDto updateStudentSubjects(Long stdId, Long subId);
 }

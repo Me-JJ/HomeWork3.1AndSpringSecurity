@@ -1,13 +1,13 @@
 package com.SchoolManagementSys.services;
 
+import com.SchoolManagementSys.dto.AdmissionRecordDto;
 import com.SchoolManagementSys.entity.AdmissionRecordEntity;
-import jakarta.validation.Valid;
 
 import java.util.List;
 
 public interface AdmissionRecordService
 {
-    List<AdmissionRecordEntity> getAllAdmissionRecords();
+    List<AdmissionRecordDto> getAllAdmissionRecords();
 
-    AdmissionRecordEntity createRecord(AdmissionRecordEntity admissionRecordDto);
+    AdmissionRecordDto createRecord(AdmissionRecordEntity admissionRecordDto);
 }

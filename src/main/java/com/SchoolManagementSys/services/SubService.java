@@ -1,55 +1,48 @@
 package com.SchoolManagementSys.services;
 
+import com.SchoolManagementSys.dto.SubDto;
+import com.SchoolManagementSys.entity.ProfEntity;
 import com.SchoolManagementSys.entity.StdEntity;
 import com.SchoolManagementSys.entity.SubEntity;
 import com.SchoolManagementSys.exceptions.ResourceNotFound;
+import com.SchoolManagementSys.repositories.ProfRepo;
 import com.SchoolManagementSys.repositories.StdRepo;
 import com.SchoolManagementSys.repositories.SubRepo;
+import com.SchoolManagementSys.utils.RandomNum;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class SubService
 {
     private final SubRepo subRepo;
-    private final StdRepo stdRepo;
+    private final ModelMapper modelMapper;
+    private final ProfRepo profRepo;
 
-    public SubService(SubRepo subRepo, StdRepo stdRepo) {
-        this.subRepo = subRepo;
-
-        this.stdRepo = stdRepo;
-    }
-
-    public SubEntity createSub(SubEntity subEntity)
+    public SubDto createSub(SubDto subDto)
     {
-        return subRepo.save(subEntity);
+        subDto.setTitle(subDto.getTitle()+" "+ RandomNum.getNumber());
+        return modelMapper.map(subRepo.save(modelMapper.map(subDto,SubEntity.class)),SubDto.class);
     }
 
-    public List<SubEntity> getAll()
+    public List<SubDto> getAll()
     {
-        return subRepo.findAll();
+        return subRepo.findAll().stream()
+                .map(sub -> modelMapper.map(sub,SubDto.class))
+                .toList();
     }
 
-    public StdEntity updateStds(Long subId, Long stdId) {
-        SubEntity subEntity = subRepo.findById(subId).orElseThrow(() -> new ResourceNotFound("no subject found with id -> " + subId));
-        StdEntity stdEntity = stdRepo.findById(stdId).orElseThrow(() -> new ResourceNotFound("no subject found with id -> " + stdId));
+    public SubDto updateSubProf(Long profId,Long subId)
+    {
+        ProfEntity prof = profRepo.findById(profId).orElseThrow(()->new ResourceNotFound("Prof not found with id ->"+profId));
+        SubEntity sub = subRepo.findById(subId).orElseThrow(()->new ResourceNotFound("Subject not found with id ->"+subId));
 
-        List<StdEntity> stds = subEntity.getStudents();
-        boolean found = false;
-        for (StdEntity std : stds) {
-            if (Objects.equals(std.getId(), stdId)) {
-                found = true;
-                break;
-            }
-        }
-        if (found) {
-            return stdEntity;
-        } else {
-        stdEntity.getSubjects().add(subEntity);
-        subRepo.save(subEntity);
-        return stdEntity;
-    }
+        sub.setProfessor(prof);
+        return modelMapper.map(subRepo.save(sub), SubDto.class);
     }
 }

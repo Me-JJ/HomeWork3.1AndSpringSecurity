@@ -1,45 +1,52 @@
 package com.SchoolManagementSys.controllers;
 
+import com.SchoolManagementSys.dto.StdDto;
 import com.SchoolManagementSys.entity.StdEntity;
 import com.SchoolManagementSys.services.StdService;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/std")
+@RequiredArgsConstructor
 public class StdController
 {
     private final StdService stdService;
-
-    public StdController(StdService stdService) {
-        this.stdService = stdService;
-    }
+    private final ModelMapper modelMapper;
 
     @PostMapping
-    public StdEntity createStudent(@RequestBody StdEntity stdEntity)
+    public ResponseEntity<StdDto> createStudent(@RequestBody StdDto stdDto)
     {
-        return stdService.createStd(stdEntity);
+        return ResponseEntity.ok(modelMapper.map(stdService.createStd(stdDto),StdDto.class));
     }
 
     @GetMapping
-    public List<StdEntity> getAll()
+    public ResponseEntity<List<StdDto>> getAll()
     {
-        return stdService.getAll();
+        return ResponseEntity.ok(stdService.getAll());
     }
 
 
     @PutMapping(path = "/{stdId}/stdarc/{arcId}")
-    public StdEntity updateStdAdmissionRecord(@PathVariable Long stdId,@PathVariable Long arcId)
+    public ResponseEntity<StdDto> updateStdAdmissionRecord(@PathVariable Long stdId,@PathVariable Long arcId)
     {
-        return stdService.updateStdAdmissionRecord(stdId,arcId);
+        return ResponseEntity.ok(stdService.updateStdAdmissionRecord(stdId,arcId));
     }
 
-    @PutMapping(path = "/{stdId}/stdprof/{profId}")
-    public StdEntity updateStdProf(@PathVariable Long stdId,@PathVariable Long profId)
+    @PutMapping(path = "/{stdId}/stdSub/{subId}")
+    public ResponseEntity<StdDto> updateStudentSubjects(@PathVariable Long stdId,@PathVariable Long subId)
     {
-        return stdService.updateStdProf(stdId,profId);
+        return ResponseEntity.ok(stdService.updateStudentSubjects(stdId,subId));
     }
+//    @PutMapping(path = "/{stdId}/stdprof/{profId}")
+//    public StdEntity updateStdProf(@PathVariable Long stdId,@PathVariable Long profId)
+//    {
+//        return stdService.updateStdProf(stdId,profId);
+//    }
 
 
 
