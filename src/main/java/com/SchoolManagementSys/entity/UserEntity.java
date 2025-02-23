@@ -37,10 +37,6 @@ public class UserEntity implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<Permission> permissions;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
@@ -54,7 +50,6 @@ public class UserEntity implements UserDetails {
         });
 
         return authorities;
-//        return List.of();
     }
 
     @Override

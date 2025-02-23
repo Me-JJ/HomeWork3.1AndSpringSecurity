@@ -6,6 +6,7 @@ public enum Permission
     PROF_VIEW,
     STUDENT_VIEW,
     SUBJECT_VIEW,
+    ADMISSION_RECORD_VIEW,
 
     //admin
     UPDATE,

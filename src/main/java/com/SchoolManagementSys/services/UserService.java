@@ -1,8 +1,10 @@
 package com.SchoolManagementSys.services;
 
+import com.SchoolManagementSys.dto.AdminUserDto;
 import com.SchoolManagementSys.dto.SignUpDto;
 import com.SchoolManagementSys.dto.UserDto;
 import com.SchoolManagementSys.entity.UserEntity;
+import com.SchoolManagementSys.entity.enums.Role;
 import com.SchoolManagementSys.exceptions.ResourceNotFound;
 import com.SchoolManagementSys.repositories.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,4 +56,35 @@ public class UserService implements UserDetailsService
     public UserEntity save(UserEntity newUser) {
         return userRepo.save(newUser);
     }
+
+
+    public List<AdminUserDto> getAllUsers()
+    {
+        return userRepo.findAll().stream().map(x ->
+                modelMapper.map(x,AdminUserDto.class)).toList();
+    }
+
+    public AdminUserDto updateUserRoleToAdmin(Long userId)
+    {
+        UserEntity user = userRepo.findById(userId).orElseThrow(()-> new ResourceNotFound("User not found wiht id -> "+userId));
+        user.getRoles().add(Role.ADMIN);
+        return modelMapper.map(userRepo.save(user),AdminUserDto.class);
+    }
+
+    public AdminUserDto updateUserRoleToProf(Long userId)
+    {
+        UserEntity user = userRepo.findById(userId).orElseThrow(()-> new ResourceNotFound("User not found wiht id -> "+userId));
+        user.getRoles().add(Role.PROF);
+        return modelMapper.map(userRepo.save(user),AdminUserDto.class);
+    }
+
+    public AdminUserDto updateUserRoleToStudent(Long userId)
+    {
+        UserEntity user = userRepo.findById(userId).orElseThrow(()-> new ResourceNotFound("User not found wiht id -> "+userId));
+        user.getRoles().add(Role.STUDENT);
+        return modelMapper.map(userRepo.save(user),AdminUserDto.class);
+    }
+
+
+
 }

@@ -32,7 +32,7 @@ public class JwtService
         return Jwts.builder()
                 .subject(user.getId().toString()) // user id in subject part of the token!
                 .claim("email",user.getEmail())
-                .claim("roles", user.getRoles())
+                .claim("roles", user.getRoles().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000*60*10)) // 10 mins
                 .signWith(getSecretKey())

@@ -5,6 +5,7 @@ import com.SchoolManagementSys.entity.ProfEntity;
 import com.SchoolManagementSys.services.ProfService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class ProfController
     private final ProfService profService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('CREATE')")
     public ResponseEntity<ProfDto> createProf(@RequestBody ProfDto profDto)
     {
 //        System.out.println("TITLE --->"+profEntity.getTitle());
@@ -24,6 +26,7 @@ public class ProfController
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('PROF_VIEW')")
     public ResponseEntity<List<ProfDto>> getAll()
     {
         return ResponseEntity.ok(profService.getAll());
@@ -36,6 +39,7 @@ public class ProfController
 //
 //    }
     @PutMapping(path = "/{profId}/profstd/{stdId}")
+    @PreAuthorize("hasAuthority('UPDATE')")
     public ResponseEntity<ProfDto> updateProfStudents(@PathVariable Long profId,@PathVariable Long stdId)
     {
         return ResponseEntity.ok(profService.updateProfStds(profId,stdId));
