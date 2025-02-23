@@ -39,8 +39,16 @@ public class UserService implements UserDetailsService
         return userRepo.findByEmail(username).orElseThrow(() -> new BadCredentialsException(("User not found with username(email) -> "+username)));
     }
 
+    public UserEntity getUserByEmail(String email)
+    {
+        return userRepo.findByEmail(email).orElse(null);
+    }
     public UserEntity getUserById(Long userId)
     {
         return userRepo.findById(userId).orElseThrow(() -> new ResourceNotFound(("User not found with userId -> "+userId)));
+    }
+
+    public UserEntity save(UserEntity newUser) {
+        return userRepo.save(newUser);
     }
 }

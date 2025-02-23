@@ -1,6 +1,7 @@
 package com.SchoolManagementSys.configs;
 
 import com.SchoolManagementSys.filter.JwtAuthFilter;
+import com.SchoolManagementSys.handler.OAuthSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,15 +23,21 @@ import java.nio.file.AccessDeniedException;
 public class WebSecurityConfig
 {
     private final JwtAuthFilter jwtAuthFilter;
+    private final OAuthSuccessHandler oAuthSuccessHandler;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
             httpSecurity.authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/auth/**").permitAll()
+                            .requestMatchers("/auth/**","/home.html").permitAll()
                             .anyRequest().authenticated())
                     .csrf(AbstractHttpConfigurer::disable)
                     .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                    .sessionManagement(sesConfig -> sesConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // no session stored -> used in cased of JWT authentication
+                    .sessionManagement(sesConfig -> sesConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // no session stored -> used in cased of JWT authentication
+                    .oauth2Login(oAuth ->
+                        oAuth.failureUrl("/login?error=true")
+                                .successHandler(oAuthSuccessHandler)
+                    );
+
 //                    .formLogin(Customizer.withDefaults());
 
             return httpSecurity.build();
